@@ -41,17 +41,16 @@ spec:
             - name: config
               mountPath: /etc/krakend/
           ports:
-            - name: http
-              containerPort: 8080
+            - containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /__health
+              port: 8080
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /__health
+              port: 8080
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

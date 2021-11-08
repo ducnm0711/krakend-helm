@@ -1,0 +1,139 @@
+{
+  "version": 2,
+  "name": "Xoekawaii",
+  "cache_ttl": "3600s",
+  "timeout": "3s",
+  "extra_config": {
+    "github_com/devopsfaith/krakend-gologging": {
+      "level": "DEBUG",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true
+    }
+  },
+  "endpoints": [
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "backend": [
+        {
+          "host": [
+            "https://jsonplaceholder.typicode.com"
+          ],
+          "mapping": {
+            "body": "output"
+          },
+          "whitelist": [
+            "id",
+            "body"
+          ],
+          "url_pattern": "/posts/1",
+          "extra_config": {
+            "github.com/devopsfaith/krakend-circuitbreaker/gobreaker": {
+              "interval": 60,
+              "timeout": 10,
+              "maxErrors": 1
+            }
+          }
+        }
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend/proxy": {
+          "static": {
+            "strategy": "success",
+            "data": {
+              "name": "IDEART",
+              "env": "pre",
+              "status": "pass"
+            }
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "/jmap",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jmap",
+          "method": "POST",
+          "encoding": "no-op",
+          "host": [
+            "http://jmap"
+          ],
+          "disable_host_sanitize": false,
+          "cache_ttl": "0s"
+        }
+      ],
+      "headers_to_pass": [
+        "Accept",
+        "Content-Type",
+        "Authorization"
+      ]
+    },
+    {
+      "endpoint": "/jmap/session",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/jmap/session",
+          "method": "GET",
+          "encoding": "no-op",
+          "host": [
+            "http://jmap"
+          ],
+          "disable_host_sanitize": false,
+          "cache_ttl": "0s"
+        }
+      ],
+      "headers_to_pass": [
+        "Authorization",
+        "Accept"
+      ]
+    },
+    {
+      "endpoint": "/authentication",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/authentication",
+          "method": "POST",
+          "encoding": "no-op",
+          "host": [
+            "http://jmap"
+          ],
+          "disable_host_sanitize": false,
+          "cache_ttl": "0s"
+        }
+      ],
+      "headers_to_pass": [
+        "Accept",
+        "Content-Type"
+      ]
+    },
+    {
+      "endpoint": "/metrics",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/metrics",
+          "method": "GET",
+          "encoding": "no-op",
+          "host": [
+            "http://james-admin:8000"
+          ],
+          "disable_host_sanitize": false,
+          "cache_ttl": "0s"
+        }
+      ],
+      "headers_to_pass": [
+        "Accept",
+        "Content-Type"
+      ]
+    }
+  ]
+}
